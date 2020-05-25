@@ -8,6 +8,7 @@ class hparams:
     fmin = 40
     min_level_db = -100
     ref_level_db = 20
+    #segment_length = 16384
     
     seq_len_factor = 64
     bits = 12

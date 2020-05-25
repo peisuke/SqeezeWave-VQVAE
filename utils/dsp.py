@@ -1,21 +1,16 @@
 import numpy as np
 import librosa, math
-import scipy
 from hparams import hparams as hp
 
-def load_wav(filename, encode=True) :
+def load_wav(filename):
     x = librosa.load(filename, sr=hp.sample_rate)[0]
-    if encode == True : x = encode_16bits(x)
     return x
 
 def save_wav(y, filename) :
-    if y.dtype != 'int16' :
-        y = encode_16bits(y)
-    #librosa.output.write_wav(filename, y.astype(np.int16), sample_rate)
-    scipy.io.wavfile.write(filename, hp.sample_rate, y.astype(np.int16))
-
-def encode_16bits(x) :
-    return np.clip(x * 2**15, -2**15, 2**15 - 1).astype(np.int16)
+    librosa.output.write_wav(filename, y, hp.sample_rate)
+    
+#def encode_16bits(x) :
+#    return np.clip(x * 2**15, -2**15, 2**15 - 1).astype(np.int16)
 
 mel_basis = None
 
@@ -36,6 +31,7 @@ def denormalize(S):
 
 def amp_to_db(x):
     return 20 * np.log10(np.maximum(1e-5, x))
+    #return np.log(np.maximum(1e-5, x))
 
 def db_to_amp(x):
     return np.power(10.0, x * 0.05)
@@ -49,6 +45,7 @@ def melspectrogram(y):
     D = stft(y)
     S = amp_to_db(linear_to_mel(np.abs(D)))
     return normalize(S)
+    #return S
 
 def stft(y):
     return librosa.stft(y=y, n_fft=hp.n_fft, hop_length=hp.hop_length, win_length=hp.win_length)

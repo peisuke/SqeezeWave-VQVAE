@@ -245,14 +245,15 @@ class SqueezeWave(torch.nn.Module):
     def infer(self, spect, sigma=1.0):
         spect_size = spect.size()
         l = spect.size(2)*(256 // self.n_audio_channel)
+        
         if spect.dtype == torch.float16:
-            audio = torch.HalfTensor(spect.size(0),
-                                     self.n_remaining_channels,
-                                     l, device=spect.device).normal_()
+            audio = torch.empty(spect.size(0),
+                                self.n_remaining_channels,
+                                l, device=spect.device).normal_()
         else:
-            audio = torch.FloatTensor(spect.size(0),
-                                      self.n_remaining_channels,
-                                      l, device=spect.device).normal_()
+            audio = torch.empty(spect.size(0),
+                                self.n_remaining_channels,
+                                l, device=spect.device).normal_()
 
         for k in reversed(range(self.n_flows)):
             n_half = int(audio.size(1)/2)
@@ -269,9 +270,9 @@ class SqueezeWave(torch.nn.Module):
 
             if k % self.n_early_every == 0 and k > 0:
                 if spect.dtype == torch.float16:
-                    z = torch.HalfTensor(spect.size(0), self.n_early_size, l, device=spect.device).normal_()
+                    z = torch.empty(spect.size(0), self.n_early_size, l, device=spect.device).normal_()
                 else:
-                    z = torch.FloatTensor(spect.size(0), self.n_early_size, l, device=spect.device).normal_()
+                    z = torch.empty(spect.size(0), self.n_early_size, l, device=spect.device).normal_()
                 audio = torch.cat((sigma*z, audio),1)
 
         audio = audio.permute(0,2,1).contiguous().view(audio.size(0), -1).data

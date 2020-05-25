@@ -15,11 +15,11 @@ def get_files(path, extension='.wav') :
         filenames += [filename]
     return filenames
 
-def convert_file(path) :
-    wav = load_wav(path, encode=False)
-    mel = melspectrogram(wav)
-    quant = wav * (2**15 - 0.5) - 0.5
-    return mel.astype(np.float32), quant.astype(np.int16)
+#def convert_file(path) :
+#    wav = load_wav(path)
+#    mel = melspectrogram(wav)
+#    quant = wav * (2**15 - 0.5) - 0.5
+#    return mel.astype(np.float32), quant.astype(np.int16)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='')
@@ -32,29 +32,30 @@ if __name__ == '__main__':
     output_dir = args.output_dir
     nb_test = args.nb_test
     
-    wav_files = sorted(get_files(wav_dir))[:30]
+    wav_files = sorted(get_files(wav_dir))
     
-    quant_dir = os.path.join(output_dir, 'quant')
-    mel_dir = os.path.join(output_dir, 'mel')
+    #quant_dir = os.path.join(output_dir, 'quant')
+    #mel_dir = os.path.join(output_dir, 'mel')
 
-    os.makedirs(quant_dir, exist_ok=True)
-    os.makedirs(mel_dir, exist_ok=True)
+    #os.makedirs(quant_dir, exist_ok=True)
+    #os.makedirs(mel_dir, exist_ok=True)
     
     # This will take a while depending on size of dataset
     dataset_ids = []
     for i, path in enumerate(tqdm.tqdm(wav_files)):
-        m, x = convert_file(path)
+        #m, x = convert_file(path)
         
-        id = os.path.splitext(os.path.basename(path))[0]
-        mel_file = os.path.join(mel_dir, f'{id}.npy')
-        quant_file = os.path.join(quant_dir, f'{id}.npy')
+        #id = os.path.splitext(os.path.basename(path))[0]
+        #mel_file = os.path.join(mel_dir, f'{id}.npy')
+        #quant_file = os.path.join(quant_dir, f'{id}.npy')
 
         dataset_ids.append({
-            'mel': mel_file,
-            'quant': quant_file,
+            'file': path
+            #'mel': mel_file,
+            #'quant': quant_file
         })
-        np.save(mel_file, m)
-        np.save(quant_file, x)
+        #np.save(mel_file, m)
+        #np.save(quant_file, x)
    
     train_ids = dataset_ids[:-nb_test]
     test_ids = dataset_ids[-nb_test:]
