@@ -37,6 +37,7 @@ if __name__ == '__main__':
     #quant_dir = os.path.join(output_dir, 'quant')
     #mel_dir = os.path.join(output_dir, 'mel')
 
+    os.makedirs(output_dir, exist_ok=True)
     #os.makedirs(quant_dir, exist_ok=True)
     #os.makedirs(mel_dir, exist_ok=True)
     
